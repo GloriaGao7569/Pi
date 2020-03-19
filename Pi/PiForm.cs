@@ -135,12 +135,11 @@ namespace Pi
         {
             _pi.Text = pi.calcValue;
             _performance.Text = pi.elapsedMs;
-
-
         }
 
         private void btnAPM_Click(object sender, EventArgs e)
         {
+            // Joshua - working on APM button!
             _pi.Text = "pi results";
             _performance.Text = "0.1";
         }
