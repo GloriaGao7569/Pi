@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Pi
 {
@@ -143,6 +146,90 @@ namespace Pi
             _pi.Text = "pi results";
             _performance.Text = "0.1";
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CalcPiAsync();
+        }
+
+        public async Task CalcPiAsync()
+        {
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            Task<string> t = new Task<string>
+            (
+                () =>
+                {
+                    int digits = (int)this._digits.Value;
+                    StringBuilder pi = new StringBuilder("3", digits + 2);
+                    if (digits > 0)
+                    {
+                        pi.Append(".");
+                        for (int i = 0; i < digits; i += 9)
+                        {
+                            int nineDigits = NineDigitsofPi.StartingAt(i + 1);
+                            int digitCount = Math.Min(digits - i, 9);
+                            string ds = string.Format("{0:D9}", nineDigits);
+                            pi.Append(ds.Substring(0, digitCount));
+                        }
+                    }
+                    return pi.ToString();
+                }
+            );
+
+            t.Start();
+
+            string result = await t;
+            timer.Stop();
+            _pi.Text = result;
+            _performance.Text = timer.Elapsed.TotalSeconds.ToString();
+
+        }
+
+        public async Task CalcPiAsyncTPL()
+        {
+            Dictionary<int, string> piDictionary =
+                new Dictionary<int, string>();
+
+            int digits = (int)this._digits.Value;
+            StringBuilder pi = new StringBuilder("3", digits + 2);
+
+            Task<string> t = new Task<string>
+            (
+                () =>
+                {
+
+                    if (digits > 0)
+                    {
+                        pi.Append(".");
+                        for (int i = 0; i < digits; i += 9)
+                        {
+                            int nineDigits = NineDigitsofPi.StartingAt(i + 1);
+                            int digitCount = Math.Min(digits - i, 9);
+                            string ds = string.Format("{0:D9}", nineDigits);
+                            pi.Append(ds.Substring(0, digitCount));
+                        }
+                    }
+                    return pi.ToString();
+
+                }
+            );
+
+            t.Start();
+
+            string result = await t;
+
+            _pi.Text = result;
+
+        }
+
     }
 
 }

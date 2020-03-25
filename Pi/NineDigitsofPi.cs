@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Pi
 {
@@ -143,5 +144,80 @@ namespace Pi
             }
             return (int)(sum * 1e9);
         }
+
+        public static async Task<int> StartingAtAsync(int n)
+        {
+            int av = 0;
+            int vmax = 0;
+            int N = (int)((n + 20) * Math.Log(10) / Math.Log(2));
+            int num = 0;
+            int den = 0;
+            int kq = 0;
+            int kq2 = 0;
+            int t = 0;
+            int v = 0;
+            int s = 0;
+            double sum = 0.0;
+
+            for (int a = 3; a <= (2 * N); a = next_prime(a))
+            {
+                vmax = (int)(Math.Log(2 * N) / Math.Log(a));
+                av = 1;
+                for (int i = 0; i < vmax; ++i) av = av * a;
+                s = 0;
+                num = 1;
+                den = 1;
+                v = 0;
+                kq = 1;
+                kq2 = 1;
+                for (int k = 1; k <= N; ++k)
+                {
+                    t = k;
+                    if (kq >= a)
+                    {
+                        do
+                        {
+                            t = t / a;
+                            --v;
+                        }
+                        while ((t % a) == 0);
+                        kq = 0;
+                    }
+                    ++kq;
+                    num = mul_mod(num, t, av);
+                    t = (2 * k - 1);
+                    if (kq2 >= a)
+                    {
+                        if (kq2 == a)
+                        {
+                            do
+                            {
+                                t = t / a;
+                                ++v;
+                            }
+                            while ((t % a) == 0);
+                        }
+                        kq2 -= a;
+                    }
+                    den = mul_mod(den, t, av);
+                    kq2 += 2;
+                    if (v > 0)
+                    {
+                        t = inv_mod(den, av);
+                        t = mul_mod(t, num, av);
+                        t = mul_mod(t, k, av);
+                        for (int i = v; i < vmax; ++i) t = mul_mod(t, a, av);
+                        s += t;
+                        if (s >= av) s -= av;
+                    }
+                }
+                t = pow_mod(10, n - 1, av);
+                s = mul_mod(s, t, av);
+                sum = (sum + (double)s / (double)av) % 1.0;
+            }
+            return (int)(sum * 1e9);
+        }
+
+
     }
 }
