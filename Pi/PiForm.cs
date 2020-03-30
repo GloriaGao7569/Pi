@@ -149,8 +149,8 @@ namespace Pi
 
         private void button3_Click(object sender, EventArgs e)
         {
-
-            
+            //CalcPiAsync3();
+            CalcPiAsyncTPL();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -184,7 +184,8 @@ namespace Pi
                 }
             );
 
-            t.Start();
+            //t.Start();
+            await t;
 
             string result = await t;
             timer.Stop();
@@ -195,41 +196,88 @@ namespace Pi
 
         public async Task CalcPiAsyncTPL()
         {
-            Dictionary<int, string> piDictionary =
-                new Dictionary<int, string>();
+
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+
+            int numberOfTask = (int)_task.Value;
+            Task[] taskArray = new Task[numberOfTask];
 
             int digits = (int)this._digits.Value;
-            StringBuilder pi = new StringBuilder("3", digits + 2);
 
-            Task<string> t = new Task<string>
-            (
-                () =>
+            int digitsPerTask = (digits / numberOfTask);
+
+            string _piString = "3.";
+
+            if (digits > 0)
+            {
+
+                for (int j = 0; j < taskArray.Length; j++)
                 {
 
-                    if (digits > 0)
-                    {
-                        pi.Append(".");
-                        for (int i = 0; i < digits; i += 9)
+                    taskArray[j] = Task.Factory.StartNew(
+                        (Object obj) =>
                         {
-                            int nineDigits = NineDigitsofPi.StartingAt(i + 1);
-                            int digitCount = Math.Min(digits - i, 9);
-                            string ds = string.Format("{0:D9}", nineDigits);
-                            pi.Append(ds.Substring(0, digitCount));
-                        }
-                    }
-                    return pi.ToString();
-
+                            CustomData data = obj as CustomData;
+                            int digits1 = digitsPerTask * (data.Name + 1);
+                            string piString1 = "";
+                            for (int i = data.Name * digitsPerTask; i < (data.Name + 1) * digitsPerTask; i += 9)
+                            {
+                                int nineDigits = NineDigitsofPi.StartingAt(i + 1);
+                                int digitCount = Math.Min(digits1 - i, 9);
+                                string ds = string.Format("{0:D9}", nineDigits);
+                                piString1 += ds.Substring(0, digitCount);
+                            }
+                            data.piString = piString1;
+                        },
+                         new CustomData() {Name = j});
                 }
-            );
 
-            t.Start();
 
-            string result = await t;
+                await Task.WhenAll(taskArray);
 
-            _pi.Text = result;
+                foreach (var task in taskArray)
+                {
+                    var data = task.AsyncState as CustomData;
+                    if (data != null)
+                        _piString += data.piString;
+                }
+
+                _performance.Text = timer.Elapsed.TotalSeconds.ToString();
+                _pi.Text = _piString;
+
+            }
+        }
+
+        public void button1_Click(object sender, EventArgs e)
+        {
+
+            int a = 1000;
+            a %= 100;
+            _pi.Text =  a.ToString();
+        }
+
+        class CustomData
+        {
+            public int Name;
+            public string piString;
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            
+        }
+
+ 
+        private void PiForm_Load(object sender, EventArgs e)
+        {
 
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

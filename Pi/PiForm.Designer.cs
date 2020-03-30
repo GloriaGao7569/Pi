@@ -42,14 +42,17 @@
             this.label3 = new System.Windows.Forms.Label();
             this._performance = new System.Windows.Forms.TextBox();
             this.button4 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this._task = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this._digits)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this._task)).BeginInit();
             this.SuspendLayout();
             // 
             // _digits
             // 
             this._digits.Location = new System.Drawing.Point(121, 35);
             this._digits.Name = "_digits";
-            this._digits.Size = new System.Drawing.Size(236, 20);
+            this._digits.Size = new System.Drawing.Size(154, 20);
             this._digits.TabIndex = 0;
             // 
             // label1
@@ -60,6 +63,7 @@
             this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 1;
             this.label1.Text = "Digits of Pi:";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // _backgroundButton
             // 
@@ -154,11 +158,34 @@
             this.button4.Text = "Save";
             this.button4.UseVisualStyleBackColor = true;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(302, 101);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(85, 13);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Number Of Task";
+            // 
+            // _task
+            // 
+            this._task.Location = new System.Drawing.Point(400, 97);
+            this._task.Name = "_task";
+            this._task.Size = new System.Drawing.Size(109, 20);
+            this._task.TabIndex = 12;
+            this._task.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
             // PiForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(569, 523);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this._task);
             this.Controls.Add(this.button4);
             this.Controls.Add(this._performance);
             this.Controls.Add(this.label3);
@@ -172,7 +199,9 @@
             this.Controls.Add(this._digits);
             this.Name = "PiForm";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.PiForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this._digits)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._task)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,6 +222,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox _performance;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown _task;
     }
 }
 
